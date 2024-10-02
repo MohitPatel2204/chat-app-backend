@@ -1,0 +1,8 @@
+*.env
+*.log
+*.git
+*.log
+/public/assets
+package-lock.json
+/node_modules
+/dist
