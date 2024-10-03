@@ -1,8 +1,12 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 class AuthenticationController {
   public login = (request: Request, response: Response) => {
-    response.send({ data: "hjgdjfgjh" });
+    response.send({ data: "login" });
+  };
+
+  public register = (request: Request, response: Response) => {
+    response.send({ data: "register" });
   };
 }
 

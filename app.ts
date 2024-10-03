@@ -1,4 +1,4 @@
-import express, { RouterOptions } from "express";
+import express from "express";
 import http from "http";
 import { HOST, PORT } from "./src/config";
 import Routes from "./src/interfaces/Routes.interface";
