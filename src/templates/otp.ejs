@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      header {
+        background-image: linear-gradient(to bottom, #3498db, #2980b9);
+      }
+
+      section {
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      strong {
+        font-weight: bold;
+        color: #337ab7;
+      }
+      footer ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      footer li {
+        margin-right: 20px;
+      }
+
+      footer a {
+        color: #337ab7;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        color: #23527c;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header
+      style="
+        background-color: #3498db;
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+      "
+    >
+      <h2 style="font-weight: bold; margin-bottom: 10px">OTP Verification</h2>
+      <p style="font-size: 14px; margin-bottom: 20px">Secure Your Account</p>
+    </header>
+
+    <!-- Body -->
+    <section
+      style="
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <p style="font-size: 16px; margin-bottom: 10px">Dear <%= user.name %>,</p>
+      <p style="font-size: 18px; font-weight: bold; margin-bottom: 20px">
+        Your OTP is:
+        <span style="color: #337ab7; font-size: 24px"><%= otp %></span>
+      </p>
+      <p style="font-size: 14px; margin-bottom: 20px">
+        Please enter this OTP to complete the verification process.
+      </p>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      style="
+        background-color: #f0f0f0;
+        padding: 20px;
+        text-align: center;
+        color: #666;
+      "
+    >
+      <p style="font-size: 14px">&copy; 2023 Your Company Name</p>
+      <p style="font-size: 12px; margin-bottom: 20px">All rights reserved.</p>
+      <ul
+        style="
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+        "
+      >
+        <li style="margin-right: 20px">
+          <a href="#" style="color: #337ab7">Terms of Service</a>
+        </li>
+        <li><a href="#" style="color: #337ab7">Privacy Policy</a></li>
+      </ul>
+    </footer>
+  </body>
+</html>

@@ -1,74 +1,108 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config";
-export const GENDER = ["male", "female", "other"];
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from "sequelize-typescript";
+import userT, { genderT } from "../interfaces/models/userT";
+import { genderEnum } from "../utils/consatnt";
+import Role from "./role";
+import OTP from "./otp";
 
-const User = sequelize.define(
-  "User",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    gender: {
-      type: DataTypes.ENUM(...GENDER),
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    mobileNo: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    image: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    isDeleted: {
-      type: DataTypes.DATE,
-      defaultValue: new Date(),
-    },
-    roleId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Role",
-        key: "id",
-      },
-    },
-  },
-  {
-    tableName: "user_details",
-    timestamps: true,
-    indexes: [
-      {
-        unique: true,
-        fields: ["mobileNo", "email"],
-      },
-    ],
-  }
-);
+@Table({
+  tableName: "user_details",
+  timestamps: true,
+})
+export default class User extends Model<userT> {
+  @Column({
+    primaryKey: true,
+    autoIncrement: true,
+    type: DataType.INTEGER,
+  })
+  id!: number;
 
-export default User;
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+  })
+  firstName!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+  })
+  lastName!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.ENUM(...genderEnum),
+  })
+  gender!: genderT;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+  })
+  email!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+  })
+  password!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+  })
+  mobileNo!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+    unique: true,
+  })
+  username!: string;
+
+  @Column({
+    allowNull: true,
+    type: DataType.DATE,
+  })
+  dob!: Date | string;
+
+  @Column({
+    allowNull: true,
+    type: DataType.STRING,
+  })
+  image!: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  isActive!: boolean;
+
+  @Column({
+    allowNull: false,
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  isDeleted!: boolean;
+
+  @ForeignKey(() => Role)
+  @Column({
+    allowNull: false,
+    type: DataType.INTEGER,
+  })
+  roleId!: number;
+
+  @BelongsTo(() => Role)
+  role!: Role;
+
+  @HasMany(() => OTP)
+  otp!: OTP[];
+}

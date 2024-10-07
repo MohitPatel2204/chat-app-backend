@@ -1,2 +1,3 @@
 npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string,gender:string,mobileNo:string,dob:date,username:string,password:string,isActive:boolean,image:string,isDelete:boolean
 npx sequelize-cli model:generate --name Role --attributes name:string,isDelete:boolean
+npx sequelize-cli model:generate --name OTP --attributes id:number,userId:number,otp:string,expiresAt:date

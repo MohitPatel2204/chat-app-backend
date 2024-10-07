@@ -1,7 +1,9 @@
 import express from "express";
 import http from "http";
-import { HOST, PORT } from "./src/config";
+import { DB_NAME, HOST, PORT } from "./src/config";
 import Routes from "./src/interfaces/Routes.interface";
+import db from "./src/models";
+import cors from "cors";
 
 class App {
   public app: express.Application;
@@ -17,6 +19,11 @@ class App {
     this.port = Number(PORT) || 9000;
     this.server = http.createServer(this.app);
 
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.json());
+    this.app.use(cors());
+
+    this.initializeDb();
     this.initializeRoutes(this.routes);
   }
 
@@ -34,8 +41,18 @@ class App {
 
   private initializeRoutes(routes: Routes[]) {
     routes.forEach((route) => {
-      this.app.use(route.router);
+      this.app.use("/api", route.router);
     });
+  }
+
+  private initializeDb() {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      db.connect;
+      console.log(`🚀 ${DB_NAME} Database connected...`);
+    } catch (error) {
+      console.log("🚀 ERROR : ", (error as Error).message);
+    }
   }
 }
 

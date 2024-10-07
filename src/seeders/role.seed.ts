@@ -1,10 +1,13 @@
+import db from "../models";
 import Role from "../models/role";
 const roles = [{ name: "admin" }, { name: "user" }];
 
-const createRole = () => {
+const createRole = async () => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    db.connect;
     roles.forEach(async (role) => {
-      const existingRole = await Role.findOne({
+      const existingRole = await Role.findAll({
         where: {
           name: role.name,
         },

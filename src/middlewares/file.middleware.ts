@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import * as fs from "fs";
 import path from "path";
-import generateResponse from "../utils/functions";
-// import generateResponse from "../../services/common/generateResponse";
+import { generateResponse } from "../utils/functions";
 
 /**
  * name: request key
@@ -20,6 +19,7 @@ type fileUploadOptions = {
 };
 
 const storage = (filesOptions: fileUploadOptions) => {
+  console.log("🚀 2");
   return multer.diskStorage({
     destination: (request: Request, file: Express.Multer.File, cb) => {
       fs.mkdirSync(filesOptions.path, { recursive: true });
@@ -32,6 +32,8 @@ const storage = (filesOptions: fileUploadOptions) => {
 };
 
 const filter = (filesOptions: fileUploadOptions) => {
+  console.log("🚀 3");
+
   return (
     request: Request,
     file: Express.Multer.File,
@@ -75,28 +77,40 @@ const fileUpload = (filesOptions: fileUploadOptions) => {
           },
         }).single(filesOptions.name + "[]");
       }
+      console.log("🚀 4");
 
       upload(request, response, (error) => {
         if (error) {
-          return generateResponse(response, null, error);
+          console.log(
+            "🚀 ~ file: file.middleware.ts:84 ~ upload ~ error:",
+            error
+          );
+          console.log("🚀 5");
+          generateResponse(response, null, error);
         } else {
+          console.log("🚀 6");
           if (filesOptions.isMultiple) {
+            console.log("🚀 7");
             request.body[filesOptions.name] = (
               request.files as Express.Multer.File[]
             )
               .map((file) => file.path.replace("public/", ""))
               .join(", ");
+            console.log("🚀 8");
           } else {
             request.body[filesOptions.name] = request.file?.path.replace(
               "public/",
               ""
             );
+            console.log("🚀 9");
           }
-          return next();
+          next();
+          console.log("🚀 10");
         }
       });
     } catch (error) {
-      return generateResponse(response, null, error);
+      console.log("🚀 ~ file: file.middleware.ts:108 ~ return ~ error:", error);
+      generateResponse(response, null, error);
     }
   };
 };

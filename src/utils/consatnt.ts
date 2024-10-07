@@ -1,3 +1,5 @@
+export const genderEnum = ["male", "female", "other"];
+
 export const imageFormat = [
   "image/png",
   "image/jpg",
@@ -5,3 +7,9 @@ export const imageFormat = [
   "image/gif",
   "image/svg+xml",
 ];
+
+export enum emailSubject {
+  ACTIVATE_ACCOUNT = "Account activation and verify",
+}
+
+export const PROFILE_PATH = "./public/user";

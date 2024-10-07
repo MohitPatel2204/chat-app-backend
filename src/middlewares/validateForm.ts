@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { NextFunction, Response, Request } from "express";
-import generateResponse from "../utils/functions";
+import { generateResponse } from "../utils/functions";
 
 export const validFormData = (schema: Joi.ObjectSchema<unknown>) => {
   return async (request: Request, response: Response, next: NextFunction) => {
@@ -22,7 +22,7 @@ export const validFormData = (schema: Joi.ObjectSchema<unknown>) => {
       abortEarly: false,
     });
     if (error) {
-      return generateResponse(response, {
+      generateResponse(response, {
         status: 400,
         message: "Invalid request data",
         data: error,
@@ -31,7 +31,7 @@ export const validFormData = (schema: Joi.ObjectSchema<unknown>) => {
         success: false,
       });
     } else {
-      return next();
+      next();
     }
   };
 };

@@ -2,8 +2,20 @@ import { config } from "dotenv";
 import { Dialect, Sequelize } from "sequelize";
 config();
 
-export const { HOST, PORT, DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } =
-  process.env;
+export const {
+  HOST,
+  PORT,
+  DB_TYPE,
+  DB_HOST,
+  DB_USER,
+  DB_PASSWORD,
+  DB_NAME,
+  MAIL_HOST,
+  MAIL_PORT,
+  MAIL_USER,
+  MAIL_PASSWORD,
+  SALT_ROUND,
+} = process.env;
 
 export const sequelize = new Sequelize(
   DB_NAME as string,
