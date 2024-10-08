@@ -19,7 +19,6 @@ type fileUploadOptions = {
 };
 
 const storage = (filesOptions: fileUploadOptions) => {
-  console.log("🚀 2");
   return multer.diskStorage({
     destination: (request: Request, file: Express.Multer.File, cb) => {
       fs.mkdirSync(filesOptions.path, { recursive: true });
@@ -32,8 +31,6 @@ const storage = (filesOptions: fileUploadOptions) => {
 };
 
 const filter = (filesOptions: fileUploadOptions) => {
-  console.log("🚀 3");
-
   return (
     request: Request,
     file: Express.Multer.File,
@@ -48,7 +45,7 @@ const filter = (filesOptions: fileUploadOptions) => {
         );
       }
     } catch (error) {
-      console.log("🚀 ERROR : ", (error as Error).message);
+      console.log("🚀 Error is : ", error);
       cb(
         new Error(`ERROR: Only ${filesOptions.type.join(", ")} is allowed...`)
       );
@@ -77,39 +74,26 @@ const fileUpload = (filesOptions: fileUploadOptions) => {
           },
         }).single(filesOptions.name + "[]");
       }
-      console.log("🚀 4");
-
       upload(request, response, (error) => {
         if (error) {
-          console.log(
-            "🚀 ~ file: file.middleware.ts:84 ~ upload ~ error:",
-            error
-          );
-          console.log("🚀 5");
           generateResponse(response, null, error);
         } else {
-          console.log("🚀 6");
           if (filesOptions.isMultiple) {
-            console.log("🚀 7");
             request.body[filesOptions.name] = (
               request.files as Express.Multer.File[]
             )
               .map((file) => file.path.replace("public/", ""))
               .join(", ");
-            console.log("🚀 8");
           } else {
             request.body[filesOptions.name] = request.file?.path.replace(
               "public/",
               ""
             );
-            console.log("🚀 9");
           }
           next();
-          console.log("🚀 10");
         }
       });
     } catch (error) {
-      console.log("🚀 ~ file: file.middleware.ts:108 ~ return ~ error:", error);
       generateResponse(response, null, error);
     }
   };

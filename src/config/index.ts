@@ -1,5 +1,6 @@
 import { config } from "dotenv";
-import { Dialect, Sequelize } from "sequelize";
+import { Dialect } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 config();
 
 export const {
@@ -19,10 +20,11 @@ export const {
 
 export const sequelize = new Sequelize(
   DB_NAME as string,
-  DB_TYPE as string,
+  DB_USER as string,
   DB_PASSWORD as string,
   {
     host: DB_HOST as string,
     dialect: DB_TYPE as Dialect,
+    logging: false,
   }
 );

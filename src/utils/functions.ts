@@ -18,9 +18,7 @@ export const generateResponse = (
   error?: unknown
 ): Response => {
   if (error) {
-    console.log("================================================");
-    console.log("🚀 Error is : ", (error as Error).message);
-    console.log("================================================");
+    console.log("🚀 Error : ", (error as Error).message);
   }
   if (params) {
     const status = params.status ?? params.success ? 200 : 400;
