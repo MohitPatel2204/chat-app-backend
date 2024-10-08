@@ -23,3 +23,11 @@ export const registerSchema: Joi.ObjectSchema<userT> = Joi.object({
   rePassword: Joi.string().allow(),
   dob: Joi.date().required(),
 });
+
+export const activeAccountSchema: Joi.ObjectSchema<{
+  email: string;
+  otp: number;
+}> = Joi.object({
+  email: Joi.string().email().required(),
+  otp: Joi.number().max(999999).min(100001).required(),
+});

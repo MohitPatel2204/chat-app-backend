@@ -1,5 +1,4 @@
 export default interface responseT {
-  error?: string;
   message?: string;
   data?: {
     data: unknown;

@@ -98,19 +98,9 @@ export default class UserService {
       },
       limit: pageSize ?? 10,
       offset: (pageNumber ?? 0) * (pageSize ?? 10),
-      attributes: [
-        "id",
-        "firstName",
-        "lastName",
-        "gender",
-        "email",
-        "username",
-        "mobileNo",
-        "dob",
-        "image",
-        "createdAt",
-        "updatedAt",
-      ],
+      attributes: {
+        exclude: ["password"],
+      },
     });
 
     const totalUser = await User.findAndCountAll({

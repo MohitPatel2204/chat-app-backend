@@ -1,7 +1,7 @@
 import express from "express";
 import AuthenticationController from "../controllers/authentication.controller";
 import { validFormData } from "../middlewares/validateForm";
-import { registerSchema } from "../schemas/auth.schema";
+import { activeAccountSchema, registerSchema } from "../schemas/auth.schema";
 import fileUpload from "../middlewares/file.middleware";
 import { imageFormat, PROFILE_PATH } from "../utils/consatnt";
 
@@ -15,6 +15,7 @@ export default class AuthenticationRoutes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}/login`, this.authenticationController.login);
+
     this.router.post(
       `${this.path}/register`,
       fileUpload({
@@ -26,6 +27,12 @@ export default class AuthenticationRoutes {
       }),
       validFormData(registerSchema),
       this.authenticationController.register
+    );
+
+    this.router.post(
+      `${this.path}/active`,
+      validFormData(activeAccountSchema),
+      this.authenticationController.activateAccount
     );
   }
 }

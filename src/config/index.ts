@@ -16,6 +16,7 @@ export const {
   MAIL_USER,
   MAIL_PASSWORD,
   SALT_ROUND,
+  OTP_EXPIRE_TIME,
 } = process.env;
 
 export const sequelize = new Sequelize(

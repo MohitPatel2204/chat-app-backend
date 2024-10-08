@@ -3,6 +3,7 @@ import responseT from "../interfaces/Response.interface";
 import nodemailer from "nodemailer";
 import { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USER } from "../config";
 import ejs from "ejs";
+import moment from "moment";
 
 export const generateResponse = (
   response: Response,
@@ -18,7 +19,7 @@ export const generateResponse = (
   error?: unknown
 ): Response => {
   if (error) {
-    console.log("🚀 Error : ", (error as Error).message);
+    console.log("🚀 Error: ", (error as Error).message);
   }
   if (params) {
     const status = params.status ?? params.success ? 200 : 400;
@@ -30,8 +31,7 @@ export const generateResponse = (
             totalCount: params.totalCount ?? 1,
           }
         : undefined,
-      message: status === 200 ? params.message : undefined,
-      error: status !== 200 ? params.message : undefined,
+      message: params.message,
       status: status,
       token: params.token,
       toast: params.toast,
@@ -102,4 +102,21 @@ export const generateTemplate = (
     return html;
   }
   return null;
+};
+
+export const getTimeDifference = (
+  time1: string,
+  time2: string,
+  type:
+    | "years"
+    | "months"
+    | "weeks"
+    | "days"
+    | "hours"
+    | "minutes"
+    | "seconds" = "hours"
+): number => {
+  const momentTime1 = moment(time1, "MM/DD/YYYY, hh:mm:ss a");
+  const momentTime2 = moment(time2, "MM/DD/YYYY, hh:mm:ss a");
+  return momentTime1.diff(momentTime2, type);
 };

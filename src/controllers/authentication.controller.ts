@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import { generateResponse } from "../utils/functions";
 import UserService from "../services/user";
+import AuthenticateService from "../services/authenticate";
 
 class AuthenticationController {
-  public userService;
+  private userService;
+  private authService;
 
   constructor() {
     this.userService = new UserService();
+    this.authService = new AuthenticateService();
   }
 
   public login = (request: Request, response: Response) => {
@@ -30,6 +33,17 @@ class AuthenticationController {
         "user"
       );
       generateResponse(response, { ...result, toast: true });
+    } catch (error) {
+      generateResponse(response, null, error);
+    }
+  };
+
+  public activateAccount = async (request: Request, response: Response) => {
+    try {
+      const email: string = request.body.email;
+      const otp: string = request.body.otp;
+      const result = await this.authService.activateAccount(email, otp);
+      generateResponse(response, { ...result, success: true, toast: true });
     } catch (error) {
       generateResponse(response, null, error);
     }
