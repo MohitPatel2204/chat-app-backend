@@ -28,10 +28,6 @@ export default class UserController {
         pageSize,
         pageNumber
       );
-      console.log(
-        "🚀 ~ file: user.controller.ts:22 ~ UserController ~ getUserBuSearch= ~ result:",
-        result
-      );
       generateResponse(response, { ...result, toast: false, success: true });
     } catch (error) {
       console.log("🚀 Error : ", (error as Error).message);
