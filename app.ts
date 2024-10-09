@@ -19,6 +19,7 @@ class App {
     this.port = Number(PORT) || 9000;
     this.server = http.createServer(this.app);
 
+    this.app.use(express.static("public"));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
     this.app.use(cors());
@@ -30,7 +31,9 @@ class App {
   listen() {
     this.server.listen(this.port, () => {
       console.log("======================================================");
-      console.log(`🚀 Server is running on http://${this.host}:${this.port}`);
+      console.log(
+        `🚀 Server is running on http://${this.host}:${this.port}/api`
+      );
       console.log("======================================================");
     });
   }

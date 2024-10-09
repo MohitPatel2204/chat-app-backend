@@ -12,8 +12,14 @@ class AuthenticationController {
     this.authService = new AuthenticateService();
   }
 
-  public login = (request: Request, response: Response) => {
-    response.send({ data: "login" });
+  public login = async (request: Request, response: Response) => {
+    try {
+      const { username, password } = request.body;
+      const result = await this.authService.login(username, password);
+      generateResponse(response, { ...result, toast: true });
+    } catch (error) {
+      generateResponse(response, null, error);
+    }
   };
 
   public register = async (request: Request, response: Response) => {
@@ -44,6 +50,16 @@ class AuthenticationController {
       const otp: string = request.body.otp;
       const result = await this.authService.activateAccount(email, otp);
       generateResponse(response, { ...result, success: true, toast: true });
+    } catch (error) {
+      generateResponse(response, null, error);
+    }
+  };
+
+  public sendOtp = async (request: Request, response: Response) => {
+    try {
+      const email: string = request.query.email as string;
+      const result = await this.authService.sendOtp(email);
+      generateResponse(response, { ...result, toast: true });
     } catch (error) {
       generateResponse(response, null, error);
     }

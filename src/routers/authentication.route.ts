@@ -1,7 +1,12 @@
 import express from "express";
 import AuthenticationController from "../controllers/authentication.controller";
 import { validFormData } from "../middlewares/validateForm";
-import { activeAccountSchema, registerSchema } from "../schemas/auth.schema";
+import {
+  activeAccountSchema,
+  loginSchema,
+  registerSchema,
+  sendOtpSchema,
+} from "../schemas/auth.schema";
 import fileUpload from "../middlewares/file.middleware";
 import { imageFormat, PROFILE_PATH } from "../utils/consatnt";
 
@@ -14,7 +19,11 @@ export default class AuthenticationRoutes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}/login`, this.authenticationController.login);
+    this.router.post(
+      `${this.path}/login`,
+      validFormData(loginSchema),
+      this.authenticationController.login
+    );
 
     this.router.post(
       `${this.path}/register`,
@@ -33,6 +42,12 @@ export default class AuthenticationRoutes {
       `${this.path}/active`,
       validFormData(activeAccountSchema),
       this.authenticationController.activateAccount
+    );
+
+    this.router.get(
+      `${this.path}/send-otp`,
+      validFormData(sendOtpSchema),
+      this.authenticationController.sendOtp
     );
   }
 }

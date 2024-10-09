@@ -2,6 +2,14 @@ import Joi from "joi";
 import userT from "../interfaces/models/userT";
 import { genderEnum } from "../utils/consatnt";
 
+export const loginSchema: Joi.ObjectSchema<{
+  username: string;
+  password: string;
+}> = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
 export const registerSchema: Joi.ObjectSchema<userT> = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
@@ -30,4 +38,10 @@ export const activeAccountSchema: Joi.ObjectSchema<{
 }> = Joi.object({
   email: Joi.string().email().required(),
   otp: Joi.number().max(999999).min(100001).required(),
+});
+
+export const sendOtpSchema: Joi.ObjectSchema<{
+  email: string;
+}> = Joi.object({
+  email: Joi.string().email().required(),
 });

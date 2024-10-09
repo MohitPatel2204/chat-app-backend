@@ -1,9 +1,16 @@
 import { Response } from "express";
 import responseT from "../interfaces/Response.interface";
 import nodemailer from "nodemailer";
-import { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USER } from "../config";
+import {
+  JWT_SECRET_KEY,
+  MAIL_HOST,
+  MAIL_PASSWORD,
+  MAIL_PORT,
+  MAIL_USER,
+} from "../config";
 import ejs from "ejs";
 import moment from "moment";
+import jwt from "jsonwebtoken";
 
 export const generateResponse = (
   response: Response,
@@ -19,7 +26,7 @@ export const generateResponse = (
   error?: unknown
 ): Response => {
   if (error) {
-    console.log("🚀 Error: ", (error as Error).message);
+    // // // console.log("🚀 Error: ", (error as Error).message);
   }
   if (params) {
     const status = params.status ?? params.success ? 200 : 400;
@@ -77,7 +84,7 @@ export const sendEmail = async (
     };
 
     const result = await transporter.sendMail(mailOPtion);
-    console.log("🚀 ~ Email is fired : ", result);
+    // // // console.log("🚀 ~ Email is fired : ", result);
     if (result.accepted) {
       return { message: "Email sent successfully", isValid: true };
     } else {
@@ -119,4 +126,8 @@ export const getTimeDifference = (
   const momentTime1 = moment(time1, "MM/DD/YYYY, hh:mm:ss a");
   const momentTime2 = moment(time2, "MM/DD/YYYY, hh:mm:ss a");
   return momentTime1.diff(momentTime2, type);
+};
+
+export const getToken = (data: Record<string, unknown>): string => {
+  return jwt.sign(data, JWT_SECRET_KEY as string);
 };

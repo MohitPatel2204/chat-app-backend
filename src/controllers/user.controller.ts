@@ -32,7 +32,7 @@ export default class UserController {
         "🚀 ~ file: user.controller.ts:22 ~ UserController ~ getUserBuSearch= ~ result:",
         result
       );
-      generateResponse(response, { ...result, toast: true, success: true });
+      generateResponse(response, { ...result, toast: false, success: true });
     } catch (error) {
       console.log("🚀 Error : ", (error as Error).message);
       generateResponse(response, null, error);
