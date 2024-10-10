@@ -26,10 +26,10 @@ export const generateResponse = (
   error?: unknown
 ): Response => {
   if (error) {
-    // // // console.log("🚀 Error: ", (error as Error).message);
+    console.log("🚀 Error: ", (error as Error).message);
   }
   if (params) {
-    const status = params.status ?? params.success ? 200 : 400;
+    const status = params.status ? params.status : params.success ? 200 : 400;
     return response.status(status).json({
       success: params.success,
       data: params.data

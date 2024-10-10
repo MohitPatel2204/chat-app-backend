@@ -8,6 +8,28 @@ export default class UserController {
     this.userService = new UserService();
   }
 
+  public getUser = (request: Request, response: Response) => {
+    try {
+      if (request.user) {
+        generateResponse(response, {
+          success: true,
+          toast: false,
+          message: "User is available",
+          data: request.user,
+        });
+      } else {
+        generateResponse(response, {
+          status: 501,
+          message: "User is Unauthorized",
+          toast: true,
+          success: false,
+        });
+      }
+    } catch (error) {
+      generateResponse(response, null, error);
+    }
+  };
+
   public getUserBySearch = async (request: Request, response: Response) => {
     try {
       const pageSize = Number(request?.query?.pageSize ?? "10");
@@ -22,7 +44,6 @@ export default class UserController {
         string,
         string | undefined
       >;
-      console.log(pageNumber, pageSize);
       const result = await this.userService.getUsersBySearch(
         { email, firstName, lastName, id, username },
         pageSize,

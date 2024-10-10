@@ -111,7 +111,6 @@ export default class UserService {
     });
 
     if (users && users.length > 0) {
-      console.log("🚀 ~ file: user.ts:97 ~ UserService ~ users:", users);
       return {
         data: users,
         totalCount: totalUser?.count,
