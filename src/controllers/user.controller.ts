@@ -55,4 +55,15 @@ export default class UserController {
       generateResponse(response, null, error);
     }
   };
+
+  public updateUser = async (request: Request, response: Response) => {
+    try {
+      const { id } = request.params;
+      const { body } = request;
+      const data = await this.userService.updateUser(id, body);
+      generateResponse(response, { ...data, success: true, toast: true });
+    } catch (error) {
+      generateResponse(response, null, error);
+    }
+  };
 }

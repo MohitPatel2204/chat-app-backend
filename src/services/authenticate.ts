@@ -93,7 +93,10 @@ export default class AuthenticateService {
         isDeleted: false,
       },
     });
-    if (!user || !bcrypt.compareSync(password, user.dataValues.password)) {
+    if (
+      !user ||
+      !bcrypt.compareSync(password, user.dataValues.password as string)
+    ) {
       throw new Error("Username and password is invalid");
     }
 
@@ -101,6 +104,7 @@ export default class AuthenticateService {
       throw new Error("Your account is not active");
     }
 
+    delete user.dataValues.password;
     return {
       message: "Login successfully",
       data: user.dataValues,

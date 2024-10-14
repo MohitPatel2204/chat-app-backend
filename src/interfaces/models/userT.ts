@@ -8,7 +8,7 @@ export default interface userT {
   lastName: string;
   gender: genderT;
   email: string;
-  password: string;
+  password?: string;
   mobileNo: string;
   dob: Date | string;
   username: string;

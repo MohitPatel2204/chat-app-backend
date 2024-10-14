@@ -11,6 +11,7 @@ import {
 import ejs from "ejs";
 import moment from "moment";
 import jwt from "jsonwebtoken";
+import fs from "fs";
 
 export const generateResponse = (
   response: Response,
@@ -130,4 +131,12 @@ export const getTimeDifference = (
 
 export const getToken = (data: Record<string, unknown>): string => {
   return jwt.sign(data, JWT_SECRET_KEY as string);
+};
+
+export const deleteFiles = (path: string | string[]) => {
+  if (Array.isArray(path)) {
+    path.forEach((url) => fs.unlinkSync(url));
+  } else {
+    fs.unlinkSync(path);
+  }
 };

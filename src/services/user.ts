@@ -4,9 +4,15 @@ import userT from "../interfaces/models/userT";
 import OTP from "../models/otp";
 import User from "../models/user";
 import { emailSubject } from "../utils/consatnt";
-import { generateOtp, generateTemplate, sendEmail } from "../utils/functions";
+import {
+  deleteFiles,
+  generateOtp,
+  generateTemplate,
+  sendEmail,
+} from "../utils/functions";
 import RoleService from "./role";
 import bcrypt from "bcrypt";
+import path from "path";
 
 export default class UserService {
   private roleService;
@@ -34,7 +40,7 @@ export default class UserService {
     }
 
     const saltRound = bcrypt.genSaltSync(Number(SALT_ROUND));
-    const password = bcrypt.hashSync(user.password, saltRound);
+    const password = bcrypt.hashSync(user?.password as string, saltRound);
 
     const createdUser = await User.create({
       ...user,
@@ -118,5 +124,40 @@ export default class UserService {
       };
     }
     throw new Error("User is not found...");
+  };
+
+  public updateUser = async (userId: string, user: userT) => {
+    const oldUser = await this.getUsersBySearch({ id: userId });
+    if (oldUser && oldUser.data[0].id.toString() === userId) {
+      if (user?.image && oldUser.data[0].image !== user.image) {
+        deleteFiles(path.join("public", oldUser.data[0].image));
+      }
+      const updatedUser = await User.update(
+        {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          username: user.username,
+          dob: user.dob,
+          gender: user.gender,
+          mobileNo: user.mobileNo,
+          ...(user?.image ? { image: user.image } : null),
+        },
+        {
+          where: {
+            id: userId,
+          },
+        }
+      );
+      if (updatedUser.pop()) {
+        const newUser = await this.getUsersBySearch({ id: userId });
+        return {
+          data: newUser.data[0].dataValues,
+          message: `${newUser.data[0].dataValues.firstName} ${newUser.data[0].dataValues.lastName} is successfully updated`,
+        };
+      }
+      throw new Error("Sorry, User profile is not updated");
+    }
+    throw new Error("User is not found");
   };
 }
