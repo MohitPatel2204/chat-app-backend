@@ -50,21 +50,26 @@ export default class UserService {
 
     const otp = generateOtp(6);
     await OTP.create({
-      expiresAt: new Date().toLocaleString(),
+      expiresAt: new Date(),
       otp,
       userId: createdUser.id,
       user: createdUser,
     });
+
+    const context = {
+      otp,
+      user: {
+        name: `${createdUser.firstName} ${createdUser.lastName}`,
+      },
+    };
+
     sendEmail(
       createdUser.email,
       emailSubject.ACTIVATE_ACCOUNT,
-      generateTemplate("./src/templates/otp.ejs", {
-        otp,
-        user: {
-          name: `${createdUser.firstName} ${createdUser.lastName}`,
-        },
-      }) ?? ""
+      context,
+      "otp.ejs"
     );
+
     return {
       success: true,
       message: `User is successfully created, Please check email, and activate account`,

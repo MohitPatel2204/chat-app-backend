@@ -3,7 +3,7 @@ import UserService from "../services/user";
 import { generateResponse } from "../utils/functions";
 
 export default class UserController {
-  private userService;
+  private readonly userService;
   constructor() {
     this.userService = new UserService();
   }

@@ -4,8 +4,8 @@ import UserService from "../services/user";
 import AuthenticateService from "../services/authenticate";
 
 class AuthenticationController {
-  private userService;
-  private authService;
+  private readonly userService;
+  private readonly authService;
 
   constructor() {
     this.userService = new UserService();

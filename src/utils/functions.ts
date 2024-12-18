@@ -12,6 +12,7 @@ import ejs from "ejs";
 import moment from "moment";
 import jwt from "jsonwebtoken";
 import fs from "fs";
+import path from "path";
 
 export const generateResponse = (
   response: Response,
@@ -30,7 +31,7 @@ export const generateResponse = (
     console.log("🚀 Error: ", (error as Error).message);
   }
   if (params) {
-    const status = params.status ? params.status : params.success ? 200 : 400;
+    const status = params.status === 200 || params.success ? 200 : 400;
     return response.status(status).json({
       success: params.success,
       data: params.data
@@ -63,9 +64,12 @@ export const generateOtp = (length: number) => {
 };
 
 export const sendEmail = async (
-  to: string,
+  to: string | Array<string>,
   subject: string,
-  message: string
+  context: Record<string, unknown>,
+  template: string,
+  cc?: string | Array<string>,
+  attachments?: Array<{ path: string; fileName: string }>
 ): Promise<{ message: string; isValid: boolean }> => {
   try {
     const transporter = nodemailer.createTransport({
@@ -76,16 +80,30 @@ export const sendEmail = async (
         pass: MAIL_PASSWORD,
       },
     });
+    const verify = await transporter.verify();
+
+    if (!verify) {
+      return { message: "Something went wrong...", isValid: false };
+    }
+    const fileName = path.join(__dirname, `../templates/${template}`);
+
+    if (!fs.existsSync(fileName)) {
+      return { message: "Template not found", isValid: false };
+    }
+
+    const message = (await generateTemplate(fileName, context)) ?? "";
 
     const mailOPtion = {
       from: MAIL_USER,
       to,
+      cc,
       subject,
       html: message,
+      attachments,
     };
 
     const result = await transporter.sendMail(mailOPtion);
-    // // // console.log("🚀 ~ Email is fired : ", result);
+    console.log("🚀 Mail is fired : ", result);
     if (result.accepted) {
       return { message: "Email sent successfully", isValid: true };
     } else {

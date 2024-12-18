@@ -7,7 +7,6 @@ import bcrypt from "bcrypt";
 
 import {
   generateOtp,
-  generateTemplate,
   getTimeDifference,
   getToken,
   sendEmail,
@@ -68,17 +67,13 @@ export default class AuthenticateService {
       userId: user.id,
       user: user,
     });
-
-    sendEmail(
-      user.email,
-      emailSubject.ACTIVATE_ACCOUNT,
-      generateTemplate("./src/templates/otp.ejs", {
-        otp,
-        user: {
-          name: `${user.firstName} ${user.lastName}`,
-        },
-      }) ?? ""
-    );
+    const context = {
+      otp,
+      user: {
+        name: `${user.firstName} ${user.lastName}`,
+      },
+    };
+    sendEmail(user.email, emailSubject.ACTIVATE_ACCOUNT, context, "otp.ejs");
 
     return {
       message: "OTP is send successfully",
