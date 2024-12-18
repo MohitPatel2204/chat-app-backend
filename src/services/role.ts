@@ -1,8 +1,6 @@
-import Role from "../models/role";
+import Role from "../database/models/role";
 
 export default class RoleService {
-  constructor() {}
-
   public roleByName = async (name: string) => {
     try {
       return await Role.findOne({

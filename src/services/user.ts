@@ -1,8 +1,8 @@
 import { Op } from "sequelize";
 import { SALT_ROUND } from "../config";
 import userT from "../interfaces/models/userT";
-import OTP from "../models/otp";
-import User from "../models/user";
+import OTP from "../database/models/otp";
+import User from "../database/models/user";
 import { emailSubject } from "../utils/constant";
 import {
   deleteFiles,
@@ -15,7 +15,7 @@ import bcrypt from "bcrypt";
 import path from "path";
 
 export default class UserService {
-  private roleService;
+  private readonly roleService;
 
   constructor() {
     this.roleService = new RoleService();

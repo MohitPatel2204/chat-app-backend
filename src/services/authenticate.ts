@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { OTP_EXPIRE_TIME } from "../config";
-import OTP from "../models/otp";
-import User from "../models/user";
+import OTP from "../database/models/otp";
+import User from "../database/models/user";
 import { emailSubject } from "../utils/constant";
 import bcrypt from "bcrypt";
 

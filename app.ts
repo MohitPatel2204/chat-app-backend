@@ -2,7 +2,7 @@ import express from "express";
 import http from "http";
 import { DB_NAME, HOST, PORT } from "./src/config";
 import Routes from "./src/interfaces/Routes.interface";
-import db from "./src/models";
+import db from "./src/database/models";
 import cors from "cors";
 
 class App {
@@ -10,12 +10,12 @@ class App {
   public routes: Routes[];
   public host: string;
   public port: number;
-  private server: http.Server;
+  private readonly server: http.Server;
 
   constructor(routes: Routes[]) {
     this.app = express();
     this.routes = routes;
-    this.host = HOST || "localhost";
+    this.host = HOST ?? "localhost";
     this.port = Number(PORT) || 9000;
     this.server = http.createServer(this.app);
 
@@ -50,8 +50,7 @@ class App {
 
   private initializeDb() {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      db.connect;
+      db.connect();
       console.log(`🚀 ${DB_NAME} Database connected...`);
     } catch (error) {
       console.log("🚀 ERROR : ", (error as Error).message);
