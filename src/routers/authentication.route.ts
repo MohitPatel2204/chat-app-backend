@@ -8,7 +8,7 @@ import {
   sendOtpSchema,
 } from "../schemas/auth.schema";
 import fileUpload from "../middlewares/file.middleware";
-import { imageFormat, PROFILE_PATH } from "../utils/consatnt";
+import { imageFormat, PROFILE_PATH } from "../utils/constant";
 
 export default class AuthenticationRoutes {
   public path = "/auth";

@@ -2,7 +2,7 @@ import express from "express";
 import UserController from "../controllers/user.controller";
 import authenticate from "../middlewares/auth.middleware";
 import fileUpload from "../middlewares/file.middleware";
-import { imageFormat, PROFILE_PATH } from "../utils/consatnt";
+import { imageFormat, PROFILE_PATH } from "../utils/constant";
 import { validFormData } from "../middlewares/validateForm";
 import { registerSchema } from "../schemas/auth.schema";
 

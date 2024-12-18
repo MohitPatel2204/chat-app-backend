@@ -8,8 +8,8 @@
     "start": "node dist/server.js",
     "dev": "nodemon server.ts",
     "build:tsc": " tsc && tsc-alias",
-    "migrate": "sequelize-cli db:migrate",
-    "seed:role": "ts-node ./src/seeders/role.seed.ts"
+    "migrate:run": "sequelize-cli db:migrate",
+    "seed:role": "ts-node ./src/database/seeders/role.seed.ts"
   },
   "author": "",
   "license": "ISC",

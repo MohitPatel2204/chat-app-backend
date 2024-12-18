@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { ModelCtor } from "sequelize-typescript";
-import { sequelize } from "../config";
+import { sequelize } from "../../config";
 
 const initSequelize = () => {
   const _basename = path.basename(module.filename);
@@ -28,6 +28,6 @@ const initSequelize = () => {
 };
 
 const db = {
-  connect: initSequelize(),
+  connect: initSequelize,
 };
 export default db;

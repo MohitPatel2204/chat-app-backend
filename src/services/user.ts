@@ -3,7 +3,7 @@ import { SALT_ROUND } from "../config";
 import userT from "../interfaces/models/userT";
 import OTP from "../models/otp";
 import User from "../models/user";
-import { emailSubject } from "../utils/consatnt";
+import { emailSubject } from "../utils/constant";
 import {
   deleteFiles,
   generateOtp,

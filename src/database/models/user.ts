@@ -7,8 +7,8 @@ import {
   Model,
   Table,
 } from "sequelize-typescript";
-import userT, { genderT } from "../interfaces/models/userT";
-import { genderEnum } from "../utils/consatnt";
+import userT, { genderT } from "../../interfaces/models/userT";
+import { genderEnum } from "../../utils/constant";
 import Role from "./role";
 import OTP from "./otp";
 

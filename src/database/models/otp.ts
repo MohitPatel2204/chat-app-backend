@@ -8,7 +8,7 @@ import {
   BelongsTo,
 } from "sequelize-typescript";
 import User from "./user";
-import { otpI } from "../interfaces/models/otpT";
+import { otpI } from "../../interfaces/models/otpT";
 
 @Table({
   tableName: "otps",

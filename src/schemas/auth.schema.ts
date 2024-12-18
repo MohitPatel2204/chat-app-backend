@@ -1,6 +1,6 @@
 import Joi from "joi";
 import userT from "../interfaces/models/userT";
-import { genderEnum } from "../utils/consatnt";
+import { genderEnum } from "../utils/constant";
 
 export const loginSchema: Joi.ObjectSchema<{
   username: string;

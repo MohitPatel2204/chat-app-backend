@@ -1,5 +1,5 @@
 import { Column, DataType, HasMany, Table, Model } from "sequelize-typescript";
-import roleT from "../interfaces/models/roleT";
+import roleT from "../../interfaces/models/roleT";
 import User from "./user";
 
 @Table({
@@ -36,10 +36,10 @@ export default class Role extends Model<roleT> {
 
   @Column({
     allowNull: false,
-    type: DataType.DATE,
-    defaultValue: null,
+    type: DataType.BOOLEAN,
+    defaultValue: false,
   })
-  isDeleted!: Date;
+  isDeleted!: boolean;
 
   @HasMany(() => User)
   users!: User[];
