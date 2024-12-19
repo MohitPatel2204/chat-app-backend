@@ -2,14 +2,10 @@ import { Op } from "sequelize";
 import { OTP_EXPIRE_TIME } from "../config";
 import OTP from "../database/models/otp";
 import User from "../database/models/user";
-import { emailSubject } from "../utils/constant";
+import { emailSubject, QUEUE_LIST } from "../utils/constant";
 import bcrypt from "bcrypt";
-import {
-  generateOtp,
-  getTimeDifference,
-  getToken,
-  sendEmail,
-} from "../utils/functions";
+import { generateOtp, getTimeDifference, getToken } from "../utils/functions";
+import queue from "./queue";
 
 export default class AuthenticateService {
   public activateAccount = async (email: string, otp: string) => {
@@ -72,7 +68,12 @@ export default class AuthenticateService {
         name: `${user.firstName} ${user.lastName}`,
       },
     };
-    sendEmail(user.email, emailSubject.ACTIVATE_ACCOUNT, context, "otp.ejs");
+    await queue.sendMessage(QUEUE_LIST.SEND_EMAIL, {
+      email: user.email,
+      subject: emailSubject.ACTIVATE_ACCOUNT,
+      context,
+      template: "otp.ejs",
+    });
 
     return {
       message: "OTP is send successfully",

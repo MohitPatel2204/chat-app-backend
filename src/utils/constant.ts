@@ -13,3 +13,7 @@ export enum emailSubject {
 }
 
 export const PROFILE_PATH = "./public/user";
+
+export enum QUEUE_LIST {
+  SEND_EMAIL = "send_email",
+}

@@ -2,15 +2,11 @@ import { Op } from "sequelize";
 import userT from "../interfaces/models/userT";
 import OTP from "../database/models/otp";
 import User from "../database/models/user";
-import { emailSubject } from "../utils/constant";
-import {
-  deleteFiles,
-  generateOtp,
-  getHashPassword,
-  sendEmail,
-} from "../utils/functions";
+import { emailSubject, QUEUE_LIST } from "../utils/constant";
+import { deleteFiles, generateOtp, getHashPassword } from "../utils/functions";
 import RoleService from "./role";
 import path from "path";
+import queue from "./queue";
 
 export default class UserService {
   private readonly roleService;
@@ -58,12 +54,12 @@ export default class UserService {
       },
     };
 
-    sendEmail(
-      createdUser.email,
-      emailSubject.ACTIVATE_ACCOUNT,
+    await queue.sendMessage(QUEUE_LIST.SEND_EMAIL, {
+      email: createdUser.email,
+      subject: emailSubject.ACTIVATE_ACCOUNT,
       context,
-      "otp.ejs"
-    );
+      template: "otp.ejs",
+    });
 
     return {
       success: true,
