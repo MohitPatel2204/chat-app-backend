@@ -1,5 +1,4 @@
 import { Op } from "sequelize";
-import { SALT_ROUND } from "../config";
 import userT from "../interfaces/models/userT";
 import OTP from "../database/models/otp";
 import User from "../database/models/user";
@@ -7,11 +6,10 @@ import { emailSubject } from "../utils/constant";
 import {
   deleteFiles,
   generateOtp,
-  generateTemplate,
+  getHashPassword,
   sendEmail,
 } from "../utils/functions";
 import RoleService from "./role";
-import bcrypt from "bcrypt";
 import path from "path";
 
 export default class UserService {
@@ -39,13 +37,10 @@ export default class UserService {
       throw new Error(`Role ${roleName} is not found`);
     }
 
-    const saltRound = bcrypt.genSaltSync(Number(SALT_ROUND));
-    const password = bcrypt.hashSync(user?.password as string, saltRound);
-
     const createdUser = await User.create({
       ...user,
       roleId: role.id,
-      password,
+      password: getHashPassword(user?.password || ""),
     });
 
     const otp = generateOtp(6);

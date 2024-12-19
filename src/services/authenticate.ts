@@ -4,7 +4,6 @@ import OTP from "../database/models/otp";
 import User from "../database/models/user";
 import { emailSubject } from "../utils/constant";
 import bcrypt from "bcrypt";
-
 import {
   generateOtp,
   getTimeDifference,

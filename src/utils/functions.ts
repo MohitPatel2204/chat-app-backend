@@ -7,12 +7,14 @@ import {
   MAIL_PASSWORD,
   MAIL_PORT,
   MAIL_USER,
+  SALT_ROUND,
 } from "../config";
 import ejs from "ejs";
 import moment from "moment";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
+import bcrypt from "bcrypt";
 
 export const generateResponse = (
   response: Response,
@@ -145,6 +147,11 @@ export const getTimeDifference = (
   const momentTime1 = moment(time1, "MM/DD/YYYY, hh:mm:ss a");
   const momentTime2 = moment(time2, "MM/DD/YYYY, hh:mm:ss a");
   return momentTime1.diff(momentTime2, type);
+};
+
+export const getHashPassword = (password: string) => {
+  const saltRound = bcrypt.genSaltSync(Number(SALT_ROUND));
+  return bcrypt.hashSync(password as string, saltRound);
 };
 
 export const getToken = (data: Record<string, unknown>): string => {
