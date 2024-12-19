@@ -3,11 +3,12 @@ import path from "path";
 
 import { ModelCtor } from "sequelize-typescript";
 import { sequelize } from "../../config";
+import { logger } from "../../config/logger";
 
 const initSequelize = () => {
   const _basename = path.basename(module.filename);
   sequelize.authenticate().catch((err) => {
-    console.log(`Something went wrong ${err.message}`);
+    logger.error(`Something went wrong ${err.message}`);
   });
 
   const _models = fs

@@ -1,3 +1,4 @@
+import { logger } from "../config/logger";
 import Role from "../database/models/role";
 
 export default class RoleService {
@@ -9,7 +10,7 @@ export default class RoleService {
         },
       });
     } catch (error) {
-      console.log("🚀 Error : ", (error as Error).message);
+      logger.error(`🚀 Error: ${(error as Error).message}`);
       return null;
     }
   };

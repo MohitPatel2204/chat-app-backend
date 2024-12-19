@@ -3,6 +3,7 @@ import multer from "multer";
 import * as fs from "fs";
 import path from "path";
 import { generateResponse } from "../utils/functions";
+import { logger } from "../config/logger";
 
 /**
  * name: request key
@@ -45,7 +46,7 @@ const filter = (filesOptions: fileUploadOptions) => {
         );
       }
     } catch (error) {
-      console.log("🚀 Error is : ", error);
+      logger.error(`🚀 Error: ${(error as Error).message}`);
       cb(
         new Error(`ERROR: Only ${filesOptions.type.join(", ")} is allowed...`)
       );

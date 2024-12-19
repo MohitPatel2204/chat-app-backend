@@ -4,6 +4,8 @@ import { DB_NAME, HOST, PORT } from "./src/config";
 import Routes from "./src/interfaces/Routes.interface";
 import db from "./src/database/models";
 import cors from "cors";
+import { logger } from "./src/config/logger";
+import log from "./src/middlewares/log.middleware";
 
 class App {
   public app: express.Application;
@@ -30,11 +32,11 @@ class App {
 
   listen() {
     this.server.listen(this.port, () => {
-      console.log("======================================================");
-      console.log(
+      logger.info("======================================================");
+      logger.info(
         `🚀 Server is running on http://${this.host}:${this.port}/api`
       );
-      console.log("======================================================");
+      logger.info("======================================================");
     });
   }
 
@@ -44,16 +46,16 @@ class App {
 
   private initializeRoutes(routes: Routes[]) {
     routes.forEach((route) => {
-      this.app.use("/api", route.router);
+      this.app.use("/api", log, route.router);
     });
   }
 
   private initializeDb() {
     try {
       db.connect();
-      console.log(`🚀 ${DB_NAME} Database connected...`);
+      logger.info(`🚀 ${DB_NAME} Database connected...`);
     } catch (error) {
-      console.log("🚀 ERROR : ", (error as Error).message);
+      logger.error(`🚀 Error: ${(error as Error).message}`);
     }
   }
 }

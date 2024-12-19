@@ -15,6 +15,7 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
+import { logger } from "../config/logger";
 
 export const generateResponse = (
   response: Response,
@@ -30,7 +31,7 @@ export const generateResponse = (
   error?: unknown
 ): Response => {
   if (error) {
-    console.log("🚀 Error: ", (error as Error).message);
+    logger.error(`🚀 Error: ${(error as Error).message}`);
   }
   if (params) {
     const status = params.status === 200 || params.success ? 200 : 400;
@@ -163,5 +164,11 @@ export const deleteFiles = (path: string | string[]) => {
     path.forEach((url) => fs.unlinkSync(url));
   } else {
     fs.unlinkSync(path);
+  }
+};
+
+export const createDirectory = (path: string) => {
+  if (!fs.existsSync(path)) {
+    fs.mkdirSync(path);
   }
 };

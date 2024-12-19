@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "../services/user";
 import { generateResponse } from "../utils/functions";
+import { logger } from "../config/logger";
 
 export default class UserController {
   private readonly userService;
@@ -51,7 +52,7 @@ export default class UserController {
       );
       generateResponse(response, { ...result, toast: false, success: true });
     } catch (error) {
-      console.log("🚀 Error : ", (error as Error).message);
+      logger.error(`🚀 Error: ${(error as Error).message}`);
       generateResponse(response, null, error);
     }
   };

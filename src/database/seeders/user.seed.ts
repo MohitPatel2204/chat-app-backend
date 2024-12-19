@@ -1,3 +1,4 @@
+import { logger } from "../../config/logger";
 import { genderEnum } from "../../utils/constant";
 import { getHashPassword } from "../../utils/functions";
 import db from "../models";
@@ -11043,7 +11044,7 @@ const createUsers = async () => {
     const roles = await Role.findAll();
 
     for (const role of roles) {
-      console.log(`🚀 ${role.name} role users seeding start...`);
+      logger.info(`🚀 ${role.name} role users seeding start...`);
       const data = users[role.name as keyof typeof users];
       for (const user of data) {
         if (!(await existUser(user.username, user.email))) {
@@ -11057,20 +11058,20 @@ const createUsers = async () => {
           });
         }
       }
-      console.log(`🚀 ${role.name} role users seeding complete...`);
+      logger.info(`🚀 ${role.name} role users seeding complete...`);
     }
   } catch (error) {
     throw new Error((error as Error)?.message);
   }
 };
 
-console.log("🚀 Users seeder running...");
+logger.info("🚀 Users seeder running...");
 createUsers()
   .then(() => {
-    console.log("🚀 Users seeder successfully completed");
+    logger.info("🚀 Users seeder successfully completed");
     process.exit(0);
   })
   .catch((error) => {
-    console.error("🚀 Error seeding users: ", error);
+    logger.error(`🚀 Error: ${(error as Error).message}`);
     process.exit(0);
   });

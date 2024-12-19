@@ -1,3 +1,4 @@
+import { logger } from "../../config/logger";
 import db from "../models";
 import Role from "../models/role";
 
@@ -16,13 +17,13 @@ const createRole = async () => {
   }
 };
 
-console.log("🚀 Role seeder running...");
+logger.info("🚀 Role seeder running...");
 createRole()
   .then(() => {
-    console.log("🚀 Role seeder successfully completed");
+    logger.info("🚀 Role seeder successfully completed");
     process.exit(0);
   })
   .catch((error) => {
-    console.error("🚀 Error seeding roles: ", error);
+    logger.error(`🚀 Error: ${(error as Error).message}`);
     process.exit(0);
   });
