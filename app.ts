@@ -1,11 +1,12 @@
-import express from "express";
-import http from "http";
-import { DB_NAME, HOST, PORT } from "./src/config";
-import Routes from "./src/interfaces/Routes.interface";
-import db from "./src/database/models";
-import cors from "cors";
-import { logger } from "./src/config/logger";
-import log from "./src/middlewares/log.middleware";
+import express from 'express';
+import http from 'http';
+import { DB_NAME, HOST, PORT } from './src/config';
+import Routes from './src/interfaces/Routes.interface';
+import db from './src/database/models';
+import cors from 'cors';
+import { logger } from './src/config/logger';
+import log from './src/middlewares/log.middleware';
+import Cron from './src/services/cron';
 
 class App {
   public app: express.Application;
@@ -13,30 +14,33 @@ class App {
   public host: string;
   public port: number;
   private readonly server: http.Server;
+  private readonly cron;
 
   constructor(routes: Routes[]) {
     this.app = express();
     this.routes = routes;
-    this.host = HOST ?? "localhost";
+    this.host = HOST ?? 'localhost';
     this.port = Number(PORT) || 9000;
     this.server = http.createServer(this.app);
+    this.cron = new Cron();
 
-    this.app.use(express.static("public"));
+    this.app.use(express.static('public'));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
     this.app.use(cors());
 
     this.initializeDb();
     this.initializeRoutes(this.routes);
+    this.initializeCron();
   }
 
   listen() {
     this.server.listen(this.port, () => {
-      logger.info("======================================================");
+      logger.info('======================================================');
       logger.info(
         `🚀 Server is running on http://${this.host}:${this.port}/api`
       );
-      logger.info("======================================================");
+      logger.info('======================================================');
     });
   }
 
@@ -46,7 +50,7 @@ class App {
 
   private initializeRoutes(routes: Routes[]) {
     routes.forEach((route) => {
-      this.app.use("/api", log, route.router);
+      this.app.use('/api', log, route.router);
     });
   }
 
@@ -56,6 +60,14 @@ class App {
       logger.info(`🚀 ${DB_NAME} Database connected...`);
     } catch (error) {
       logger.error(`🚀 Error: ${(error as Error).message}`);
+    }
+  }
+
+  private async initializeCron() {
+    try {
+      this.cron.startCron();
+    } catch (error) {
+      logger.error(`🚀 Error : ${(error as Error).message}`);
     }
   }
 }
