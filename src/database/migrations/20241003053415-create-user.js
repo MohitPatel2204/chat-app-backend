@@ -1,8 +1,6 @@
-/* eslint-disable no-undef */
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { DataTypes } = require("sequelize");
+"use strict";
 
-const up = async (queryInterface) => {
+export async function up(queryInterface, Sequelize) {
   await queryInterface.createTable(
     "user_details",
     {
@@ -10,54 +8,54 @@ const up = async (queryInterface) => {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
       },
       firstName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       lastName: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       email: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       gender: {
-        type: DataTypes.ENUM("male", "female", "other"),
+        type: Sequelize.ENUM("male", "female", "other"),
         defaultValue: "male",
       },
       mobileNo: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       dob: {
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
       },
       username: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       password: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       isActive: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
       isDeleted: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
       image: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: Sequelize.DATE,
       },
       roleId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         references: {
           model: "roles",
           key: "id",
@@ -75,10 +73,7 @@ const up = async (queryInterface) => {
       ],
     }
   );
-};
-
-const down = async (queryInterface) => {
+}
+export async function down(queryInterface) {
   await queryInterface.dropTable("user_details");
-};
-
-module.exports = { up, down };
+}
