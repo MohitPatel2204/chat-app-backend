@@ -11377,8 +11377,7 @@ const createUsers = async () => {
         if (!(await existUser(user.username, user.email))) {
           await User.create({
             ...user,
-            gender:
-              user.gender.toLocaleLowerCase() as unknown as typeof genderEnum,
+            gender: user.gender.toLocaleLowerCase() as unknown as "male",
             roleId: role.id,
             isActive: true,
             password: getHashPassword(user.password),

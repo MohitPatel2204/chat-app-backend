@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
     "dev": "nodemon server.ts",
+    "build": "swc src -d dist --source-maps --copy-files",
     "build:tsc": " tsc && tsc-alias",
     "migrate:run": "sequelize-cli db:migrate",
     "seed:role": "ts-node ./src/database/seeders/role.seed.ts",
@@ -45,6 +46,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@swc/cli": "^0.6.0",
+    "@swc/core": "^1.10.7",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.7",

@@ -1,4 +1,4 @@
-import Role from "../../models/role";
+import Role from "../../database/models/role";
 
 export type genderT = "male" | "female" | "other";
 
