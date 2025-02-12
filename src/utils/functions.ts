@@ -1,6 +1,6 @@
-import { Response } from 'express';
-import responseT from '../interfaces/Response.interface';
-import nodemailer from 'nodemailer';
+import { Response } from "express";
+import responseT from "../interfaces/Response.interface";
+import nodemailer from "nodemailer";
 import {
   JWT_SECRET_KEY,
   MAIL_HOST,
@@ -8,14 +8,14 @@ import {
   MAIL_PORT,
   MAIL_USER,
   SALT_ROUND,
-} from '../config';
-import ejs from 'ejs';
-import moment from 'moment';
-import jwt from 'jsonwebtoken';
-import fs from 'fs';
-import path from 'path';
-import bcrypt from 'bcrypt';
-import { logger } from '../config/logger';
+} from "../config";
+import ejs from "ejs";
+import moment from "moment";
+import jwt from "jsonwebtoken";
+import fs from "fs";
+import path from "path";
+import bcrypt from "bcrypt";
+import { logger } from "../config/logger";
 
 export const generateResponse = (
   response: Response,
@@ -59,7 +59,7 @@ export const generateResponse = (
 };
 
 export const generateOtp = (length: number) => {
-  let otp = '';
+  let otp = "";
   for (let i = 0; i < length; i++) {
     otp += Math.floor(Math.random() * 10).toString();
   }
@@ -86,15 +86,15 @@ export const sendEmail = async (
     const verify = await transporter.verify();
 
     if (!verify) {
-      return { message: 'Something went wrong...', isValid: false };
+      return { message: "Something went wrong...", isValid: false };
     }
     const fileName = path.join(__dirname, `../templates/${template}`);
 
     if (!fs.existsSync(fileName)) {
-      return { message: 'Template not found', isValid: false };
+      return { message: "Template not found", isValid: false };
     }
 
-    const message = (await generateTemplate(fileName, context)) ?? '';
+    const message = (await generateTemplate(fileName, context)) ?? "";
 
     const mailOPtion = {
       from: MAIL_USER,
@@ -106,11 +106,11 @@ export const sendEmail = async (
     };
 
     const result = await transporter.sendMail(mailOPtion);
-    console.log('🚀 Mail is fired : ', result);
+    console.log("🚀 Mail is fired : ", result);
     if (result.accepted) {
-      return { message: 'Email sent successfully', isValid: true };
+      return { message: "Email sent successfully", isValid: true };
     } else {
-      return { message: 'Something is wrong...', isValid: false };
+      return { message: "Something is wrong...", isValid: false };
     }
   } catch (error) {
     return {
@@ -137,16 +137,16 @@ export const getTimeDifference = (
   time1: string,
   time2: string,
   type:
-    | 'years'
-    | 'months'
-    | 'weeks'
-    | 'days'
-    | 'hours'
-    | 'minutes'
-    | 'seconds' = 'hours'
+    | "years"
+    | "months"
+    | "weeks"
+    | "days"
+    | "hours"
+    | "minutes"
+    | "seconds" = "hours"
 ): number => {
-  const momentTime1 = moment(time1, 'MM/DD/YYYY, hh:mm:ss a');
-  const momentTime2 = moment(time2, 'MM/DD/YYYY, hh:mm:ss a');
+  const momentTime1 = moment(time1, "MM/DD/YYYY, hh:mm:ss a");
+  const momentTime2 = moment(time2, "MM/DD/YYYY, hh:mm:ss a");
   return momentTime1.diff(momentTime2, type);
 };
 

@@ -1,0 +1,194 @@
+{
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Authentication related endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User Login",
+        "description": "This endpoint allows a user to log in by providing their credentials (username and password).",
+        "requestBody": {
+          "description": "User login credentials.",
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "myPassword123"
+                  }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessfulResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerErrorResponse"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User Registration",
+        "description": "This endpoint allows a user to register by providing their credentials",
+        "requestBody": {
+          "description": "User registration credentials",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "Test@123"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["male", "female", "other"]
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "mobileNo": {
+                    "type": "string",
+                    "example": "1234567890"
+                  },
+                  "dob": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "User  profile picture"
+                  }
+                },
+                "required": [
+                  "password",
+                  "username",
+                  "firstName",
+                  "lastName",
+                  "email",
+                  "gender",
+                  "mobileNo",
+                  "dob"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessfulResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerErrorResponse"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "SuccessfulResponse": {
+        "description": "success response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "toast": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ServerErrorResponse": {
+        "description": "Internal Server Error - Invalid credentials",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "toast": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
