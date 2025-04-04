@@ -27,6 +27,11 @@ export const generateResponse = (
     data?: unknown;
     totalCount?: number;
     token?: string;
+    page?: number;
+    limit?: number;
+    order?: string;
+    sort?: string;
+    isNextPage?: boolean;
   } | null,
   error?: unknown
 ): Response => {
@@ -34,13 +39,19 @@ export const generateResponse = (
     logger.error(`🚀 Error: ${(error as Error).message}`);
   }
   if (params) {
-    const status = params.status === 200 || params.success ? 200 : 400;
+    const status =
+      params.status === 200 || params.success ? 200 : params.status ?? 400;
     return response.status(status).json({
       success: params.success,
       data: params.data
         ? {
             data: params.data,
             totalCount: params.totalCount ?? 1,
+            page: params.page,
+            limit: params.limit,
+            order: params.order,
+            sort: params.sort,
+            isNextPage: params.isNextPage,
           }
         : undefined,
       message: params.message,
@@ -49,15 +60,14 @@ export const generateResponse = (
       toast: params.toast,
     } as responseT);
   } else {
-    return response.status(500).json({
-      status: 500,
+    return response.status(400).json({
+      status: 400,
       message: (error as Error).message,
       success: false,
       toast: true,
     });
   }
 };
-
 export const generateOtp = (length: number) => {
   let otp = "";
   for (let i = 0; i < length; i++) {

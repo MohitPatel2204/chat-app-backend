@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "../services/user";
 import { generateResponse } from "../utils/functions";
-import { logger } from "../config/logger";
+import { sequelize } from "../config";
 
 export default class UserController {
   private readonly userService;
@@ -32,38 +32,38 @@ export default class UserController {
   };
 
   public getUserBySearch = async (request: Request, response: Response) => {
+    const transaction = await sequelize.transaction();
     try {
-      const pageSize = Number(request?.query?.pageSize ?? "10");
-      const pageNumber = Number(request?.query?.pageNumber ?? "0");
-      const {
-        email,
-        firstName,
-        lastName,
-        id,
-        username,
-      }: Record<string, string | undefined> = request.query as Record<
-        string,
-        string | undefined
-      >;
       const result = await this.userService.getUsersBySearch(
-        { email, firstName, lastName, id, username },
-        pageSize,
-        pageNumber
+        request.query,
+        transaction
       );
-      generateResponse(response, { ...result, toast: false, success: true });
+      await transaction.commit();
+      generateResponse(response, {
+        ...result,
+        toast: false,
+        success: true,
+      });
     } catch (error) {
-      logger.error(`🚀 Error: ${(error as Error).message}`);
+      await transaction.rollback();
       generateResponse(response, null, error);
     }
   };
 
   public updateUser = async (request: Request, response: Response) => {
+    const transaction = await sequelize.transaction();
     try {
       const { id } = request.params;
       const { body } = request;
-      const data = await this.userService.updateUser(id, body);
+      const data = await this.userService.updateUser(
+        Number(id),
+        body,
+        transaction
+      );
+      await transaction.commit();
       generateResponse(response, { ...data, success: true, toast: true });
     } catch (error) {
+      await transaction.rollback();
       generateResponse(response, null, error);
     }
   };

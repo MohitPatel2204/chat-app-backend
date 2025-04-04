@@ -2,11 +2,17 @@ import { Op, Transaction } from "sequelize";
 import userT from "../interfaces/models/userT";
 import OTP from "../database/models/otp";
 import User from "../database/models/user";
-import { emailSubject, QUEUE_LIST } from "../utils/constant";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  emailSubject,
+  QUEUE_LIST,
+} from "../utils/constant";
 import { deleteFiles, generateOtp, getHashPassword } from "../utils/functions";
 import RoleService from "./role";
 import path from "path";
 import queue from "./queue";
+import queryParameterT from "../interfaces/Query.interface";
 
 export default class UserService {
   private readonly roleService;
@@ -80,66 +86,76 @@ export default class UserService {
   };
 
   public getUsersBySearch = async (
-    {
-      email,
-      firstName,
-      lastName,
-      id,
-      username,
-    }: {
-      email?: string;
-      firstName?: string;
-      lastName?: string;
-      id?: string;
-      username?: string;
-    },
-    pageSize?: number,
-    pageNumber?: number
+    query: queryParameterT,
+    transaction: Transaction | null
   ) => {
-    const query = [
-      firstName ? { firstName: { [Op.like]: `%${firstName}%` } } : null,
-      lastName ? { lastName: { [Op.like]: `%${lastName}%` } } : null,
-      username ? { username: { [Op.like]: `%${username}%` } } : null,
-      email ? { email: { [Op.like]: `%${email}%` } } : null,
-      id ? { id } : null,
-    ].filter((item) => item !== null);
+    const page = Number(query?.page ?? DEFAULT_PAGE);
+    const limit = Number(query?.limit ?? DEFAULT_PAGE_SIZE);
 
-    const users = await User.findAll({
+    const { rows, count } = await User.findAndCountAll({
       where: {
-        ...(query.length > 0 ? { [Op.or]: [...query] } : null),
+        ...(query.filter
+          ? {
+              [Op.or]: [
+                { $firstName$: { [Op.like]: `%${query.filter}%` } },
+                { $lastName$: { [Op.like]: `%${query.filter}%` } },
+                { $email$: { [Op.like]: `%${query.filter}%` } },
+                { $gender$: { [Op.like]: `%${query.filter}%` } },
+                { $username$: { [Op.like]: `%${query.filter}%` } },
+              ],
+            }
+          : null),
         isDeleted: false,
       },
-      limit: pageSize ?? 10,
-      offset: (pageNumber ?? 0) * (pageSize ?? 10),
       attributes: {
         exclude: ["password"],
       },
+      order: [
+        [
+          query?.sort ? query.sort : "updatedAt",
+          query?.order ? query.order : "desc",
+        ],
+      ],
+      limit,
+      offset: (page - 1) * limit,
+      transaction,
     });
 
-    const totalUser = await User.findAndCountAll({
-      where: {
-        ...(query.length > 0 ? { [Op.or]: [...query] } : null),
-        isDeleted: false,
-      },
-    });
-
-    if (users && users.length > 0) {
-      return {
-        data: users,
-        totalCount: totalUser?.count,
-        message: `Total ${totalUser.count} users fetched.`,
-      };
-    }
-    throw new Error("User is not found...");
+    return {
+      message: "Users are successfully retrieved",
+      data: rows,
+      totalCount: count,
+      isNextPage: page * limit < count,
+      page,
+      limit,
+      sort: query?.sort,
+      order: query?.order,
+    };
   };
 
-  public updateUser = async (userId: string, user: userT) => {
-    const oldUser = await this.getUsersBySearch({ id: userId });
-    if (oldUser && oldUser.data[0].id.toString() === userId) {
-      if (user?.image && oldUser.data[0].image !== user.image) {
-        deleteFiles(path.join("public", oldUser.data[0].image));
+  public getUserById = async (id: number, transaction: Transaction | null) => {
+    const user = await User.findByPk(id, { transaction });
+    if (!user) {
+      throw new Error("User is not found...");
+    }
+
+    return {
+      data: user,
+      message: "User fetched successfully.",
+    };
+  };
+
+  public updateUser = async (
+    userId: number,
+    user: userT,
+    transaction: Transaction | null
+  ) => {
+    const existUser = await this.getUserById(userId, transaction);
+    if (existUser) {
+      if (user?.image && existUser.data.image !== user.image) {
+        deleteFiles(path.join("public", existUser.data.image));
       }
-      const updatedUser = await User.update(
+      const updatedUser = await existUser.data.update(
         {
           firstName: user.firstName,
           lastName: user.lastName,
@@ -151,19 +167,13 @@ export default class UserService {
           ...(user?.image ? { image: user.image } : null),
         },
         {
-          where: {
-            id: userId,
-          },
+          transaction,
         }
       );
-      if (updatedUser.pop()) {
-        const newUser = await this.getUsersBySearch({ id: userId });
-        return {
-          data: newUser.data[0].dataValues,
-          message: `${newUser.data[0].dataValues.firstName} ${newUser.data[0].dataValues.lastName} is successfully updated`,
-        };
-      }
-      throw new Error("Sorry, User profile is not updated");
+      return {
+        data: updatedUser,
+        message: "User updated successfully.",
+      };
     }
     throw new Error("User is not found");
   };

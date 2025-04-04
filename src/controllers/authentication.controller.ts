@@ -68,11 +68,14 @@ class AuthenticationController {
   };
 
   public sendOtp = async (request: Request, response: Response) => {
+    const transaction = await sequelize.transaction();
     try {
       const email: string = request.query.email as string;
-      const result = await this.authService.sendOtp(email);
+      const result = await this.authService.sendOtp(email, transaction);
+      await transaction.commit();
       generateResponse(response, { ...result, toast: true });
     } catch (error) {
+      await transaction.rollback();
       generateResponse(response, null, error);
     }
   };

@@ -19,9 +19,9 @@ passport.use(
   new JwtStrategy(options, async (payload, done) => {
     try {
       const userService = new UserService();
-      const user = await userService.getUsersBySearch({ id: payload.id });
-      if (user?.data?.length > 0) {
-        return done(null, user.data.pop()?.dataValues);
+      const user = await userService.getUserById(payload.id, null);
+      if (user?.data) {
+        return done(null, user.data.dataValues);
       }
       return done(null, false);
     } catch (error) {

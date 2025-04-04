@@ -55,19 +55,22 @@ export default class AuthenticateService {
     };
   };
 
-  public sendOtp = async (email: string) => {
-    const user = await User.findOne({ where: { email } });
+  public sendOtp = async (email: string, transaction: Transaction | null) => {
+    const user = await User.findOne({ where: { email }, transaction });
     if (!user) {
       throw new Error("User is not exist");
     }
 
     const otp = generateOtp(6);
-    await OTP.create({
-      expiresAt: new Date().toLocaleString(),
-      otp,
-      userId: user.id,
-      user: user,
-    });
+    await OTP.create(
+      {
+        expiresAt: new Date().toLocaleString(),
+        otp,
+        userId: user.id,
+        user: user,
+      },
+      { transaction }
+    );
     const context = {
       otp,
       user: {
