@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { OTP_EXPIRE_TIME } from "../config";
 import OTP from "../database/models/otp";
 import User from "../database/models/user";
@@ -8,7 +8,11 @@ import { generateOtp, getTimeDifference, getToken } from "../utils/functions";
 import queue from "./queue";
 
 export default class AuthenticateService {
-  public activateAccount = async (email: string, otp: string) => {
+  public activateAccount = async (
+    email: string,
+    otp: string,
+    transaction: Transaction | null
+  ) => {
     const otpResult = await OTP.findOne({
       include: [
         {
@@ -18,6 +22,7 @@ export default class AuthenticateService {
       ],
       where: { otp },
       order: [["createdAt", "DESC"]],
+      transaction,
     });
 
     if (!otpResult) {
@@ -39,6 +44,7 @@ export default class AuthenticateService {
         where: {
           id: otpResult.user.id,
         },
+        transaction,
       }
     );
 

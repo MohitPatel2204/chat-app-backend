@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { generateResponse } from "../utils/functions";
 import UserService from "../services/user";
 import AuthenticateService from "../services/authenticate";
+import { sequelize } from "../config";
 
 class AuthenticationController {
   private readonly userService;
@@ -23,6 +24,7 @@ class AuthenticationController {
   };
 
   public register = async (request: Request, response: Response) => {
+    const transaction = await sequelize.transaction();
     try {
       const result = await this.userService.createUser(
         {
@@ -36,21 +38,31 @@ class AuthenticationController {
           image: request?.body?.image ?? null,
           dob: request?.body?.dob,
         },
-        "user"
+        "user",
+        transaction
       );
+      await transaction.commit();
       generateResponse(response, { ...result, toast: true });
     } catch (error) {
+      await transaction.rollback();
       generateResponse(response, null, error);
     }
   };
 
   public activateAccount = async (request: Request, response: Response) => {
+    const transaction = await sequelize.transaction();
     try {
       const email: string = request.body.email;
       const otp: string = request.body.otp;
-      const result = await this.authService.activateAccount(email, otp);
+      const result = await this.authService.activateAccount(
+        email,
+        otp,
+        transaction
+      );
+      await transaction.commit();
       generateResponse(response, { ...result, success: true, toast: true });
     } catch (error) {
+      await transaction.rollback();
       generateResponse(response, null, error);
     }
   };

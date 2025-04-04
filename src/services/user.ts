@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import userT from "../interfaces/models/userT";
 import OTP from "../database/models/otp";
 import User from "../database/models/user";
@@ -15,37 +15,48 @@ export default class UserService {
     this.roleService = new RoleService();
   }
 
-  public createUser = async (user: userT, roleName: string) => {
+  public createUser = async (
+    user: userT,
+    roleName: string,
+    transaction: Transaction | null
+  ) => {
     const existUser = await User.findOne({
       where: {
         email: user.email,
         mobileNo: user.mobileNo,
         isDeleted: false,
       },
+      transaction,
     });
 
     if (existUser) {
       throw new Error(`${user.email} is already exist`);
     }
 
-    const role = await this.roleService.roleByName(roleName);
+    const role = await this.roleService.roleByName(roleName, transaction);
     if (!role) {
       throw new Error(`Role ${roleName} is not found`);
     }
 
-    const createdUser = await User.create({
-      ...user,
-      roleId: role.id,
-      password: getHashPassword(user?.password || ""),
-    });
+    const createdUser = await User.create(
+      {
+        ...user,
+        roleId: role.id,
+        password: getHashPassword(user?.password || ""),
+      },
+      { transaction }
+    );
 
     const otp = generateOtp(6);
-    await OTP.create({
-      expiresAt: new Date(),
-      otp,
-      userId: createdUser.id,
-      user: createdUser,
-    });
+    await OTP.create(
+      {
+        expiresAt: new Date(),
+        otp,
+        userId: createdUser.id,
+        user: createdUser,
+      },
+      { transaction }
+    );
 
     const context = {
       otp,

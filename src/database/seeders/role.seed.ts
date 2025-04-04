@@ -1,18 +1,30 @@
+import { sequelize } from "../../config";
 import { logger } from "../../config/logger";
+import { roles } from "../../utils/data";
 import db from "../models";
 import Role from "../models/role";
 
 const createRole = async () => {
   db.connect();
-  const roles = [{ name: "admin" }, { name: "user" }];
+  const transaction = await sequelize.transaction();
   try {
-    for (const role of roles) {
-      const existingRole = await Role.findOne({ where: { name: role.name } });
+    for (const role of Object.values(roles)) {
+      const existingRole = await Role.findOne({
+        where: { name: role },
+        transaction,
+      });
       if (!existingRole) {
-        await Role.create(role);
+        await Role.create(
+          {
+            name: role,
+          },
+          { transaction }
+        );
       }
     }
+    await transaction.commit();
   } catch (error) {
+    await transaction.rollback();
     throw new Error((error as Error)?.message);
   }
 };

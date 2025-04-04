@@ -1,5 +1,10 @@
+export enum roles {
+  ADMIN = "admin",
+  USER = "user",
+}
+
 export const users = {
-  admin: [
+  [roles.ADMIN]: [
     {
       firstName: "admin",
       lastName: "123",
@@ -23,7 +28,7 @@ export const users = {
       isActive: true,
     },
   ],
-  user: [
+  [roles.USER]: [
     {
       firstName: "Lorne",
       lastName: "Sutcliff",
