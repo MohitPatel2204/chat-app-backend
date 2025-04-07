@@ -1,8 +1,8 @@
-import cron from 'node-cron';
-import { QUEUE_LIST } from '../utils/constant';
-import queue from './queue';
-import { logger } from '../config/logger';
-import { delay } from '../utils/functions';
+import cron from "node-cron";
+import { QUEUE_LIST } from "../utils/constant";
+import queue from "./queue";
+import { logger } from "../config/logger";
+import { delay } from "../utils/functions";
 
 class Cron {
   private readonly cronExecutationTime;
@@ -10,13 +10,13 @@ class Cron {
   private isProcessing: boolean = false; // Flag to track whether a message is being processed
 
   constructor() {
-    this.cronExecutationTime = '*/2 * * * * *'; // Every 2 seconds
+    this.cronExecutationTime = "*/2 * * * * *"; // Every 2 seconds
     this.queueList = Object.values(QUEUE_LIST);
   }
 
   private async receiveMessage() {
     if (this.isProcessing) {
-      logger.info('🚀 Cron job is already processing a message. Skipping...');
+      logger.info("🚀 Cron job is already processing a message. Skipping...");
       return;
     }
 
@@ -27,7 +27,6 @@ class Cron {
           .schedule(this.cronExecutationTime, async () => {
             try {
               await queue.receiveMessage(queueName);
-              logger.info(`🚀 message is processing completed.... `);
             } catch (e) {
               logger.info(`🚀 ${(e as Error).message}`);
             }

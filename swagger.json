@@ -3,6 +3,10 @@
     {
       "name": "Authentication",
       "description": "Authentication related endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "Endpoints related to users"
     }
   ],
   "paths": {
@@ -114,6 +118,54 @@
           },
           "500": {
             "$ref": "#/components/responses/ServerErrorResponse"
+          }
+        }
+      }
+    },
+    "/auth/active": {
+      "post": {
+        "summary": "Activate user account",
+        "description": "Activate user account",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "otp": {
+                    "type": "number",
+                    "format": "int32"
+                  }
+                },
+                "required": ["email", "otp"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/send-otp": {
+      "post": {
+        "summary": "Send OTP to user",
+        "description": "Send OTP to user",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            }
           }
         }
       }

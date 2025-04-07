@@ -1,8 +1,8 @@
-import amqp from 'amqplib';
-import { HOST } from '../config';
-import { QUEUE_LIST } from '../utils/constant';
-import { logger } from '../config/logger';
-import { delay, sendEmail } from '../utils/functions';
+import amqp from "amqplib";
+import { HOST } from "../config";
+import { QUEUE_LIST } from "../utils/constant";
+import { logger } from "../config/logger";
+import { delay, sendEmail } from "../utils/functions";
 class Queue {
   private connection: amqp.Connection | null = null;
   private channel: amqp.Channel | null = null;
@@ -16,9 +16,10 @@ class Queue {
   async init() {
     try {
       // Connect to RabbitMQ server
-      this.connection = await amqp.connect(`amqp://${HOST ?? 'localhost'}`);
+      this.connection = await amqp.connect(`amqp://${HOST ?? "localhost"}`);
       this.channel = await this.connection.createChannel();
-      logger.info('🚀 Queue connected to RabbitMQ server');
+
+      logger.info("🚀 Queue connected to RabbitMQ server");
 
       // Initialize all queues
       for (const queueName of this.queueList) {
@@ -59,8 +60,8 @@ class Queue {
       logger.error(`🚀 Error processing message: ${(error as Error).message}`);
       let retryCount =
         message.properties.headers &&
-        message.properties.headers['X-retry-count']
-          ? parseInt(message.properties.headers['X-retry-count'])
+        message.properties.headers["X-retry-count"]
+          ? parseInt(message.properties.headers["X-retry-count"])
           : 0;
 
       if (retryCount > 3) {
@@ -74,7 +75,7 @@ class Queue {
           messageData,
           {
             headers: {
-              'X-retry-count': retryCount,
+              "X-retry-count": retryCount,
             },
           }
         );
@@ -85,13 +86,13 @@ class Queue {
   // Consume messages from the queue
   async receiveMessage(queueName: QUEUE_LIST) {
     if (!this.connection || !this.channel) {
-      logger.warn('🚀 RabbitMQ server connection is not established');
+      logger.warn("🚀 RabbitMQ server connection is not established");
       return null;
     }
 
     const messageExisting = await this.channel?.checkQueue(queueName);
     if (messageExisting.messageCount === 0) {
-      throw new Error(`No message received for queue ${queueName}`);
+      return null;
     }
     this.channel?.consume(queueName, (message: amqp.ConsumeMessage | null) => {
       if (message) {
@@ -99,7 +100,7 @@ class Queue {
           this.channel?.ack(message);
         });
       } else {
-        throw new Error(`No message received for queue ${queueName}`);
+        return null;
       }
     });
   }
@@ -112,7 +113,7 @@ class Queue {
   ) {
     try {
       if (!this.connection || !this.channel) {
-        logger.warn('🚀 RabbitMQ server connection is not established');
+        logger.warn("🚀 RabbitMQ server connection is not established");
         return;
       }
 
@@ -135,11 +136,11 @@ class Queue {
     try {
       if (this.channel) {
         await this.channel.close();
-        logger.info('🚀 RabbitMQ channel closed');
+        logger.info("🚀 RabbitMQ channel closed");
       }
       if (this.connection) {
         await this.connection.close();
-        logger.info('🚀 RabbitMQ connection closed');
+        logger.info("🚀 RabbitMQ connection closed");
       }
     } catch (error) {
       logger.error(
